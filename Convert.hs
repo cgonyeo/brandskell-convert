@@ -177,8 +177,8 @@ main = do
 
                 forM_ people (\(Person pid _ na ni user src) -> H.unitEx $
                     [H.stmt|INSERT INTO "people"
-                                (id,name,nickname,csh_username,source)
-                                VALUES (?,?,?,?,?)|]
+                                (id,name,nickname,csh_username,source,admin)
+                                VALUES (?,?,?,?,?,false)|]
                                 pid na ni user src)
 
                 forM_ entries (\(Entry pid tip st en entry img) -> H.unitEx $
