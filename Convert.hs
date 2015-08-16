@@ -167,13 +167,25 @@ main = do
                     [H.stmt|INSERT INTO "reasons" (id,reason) VALUES (?,?)|]
                                 rid rtxt)
 
+                H.unitEx $ [H.stmt|
+                        SELECT setval('reasons_id_seq', ?)
+                    |] (length reasons)
+
                 forM_ trips (\(Trip tid _ rid) -> H.unitEx $
                     [H.stmt|INSERT INTO "trips" (id,reason_id) VALUES (?,?)|]
                                 tid rid)
 
+                H.unitEx $ [H.stmt|
+                        SELECT setval('trips_id_seq', ?)
+                    |] (length trips)
+
                 forM_ sources (\(Source sid stxt) -> H.unitEx $
                     [H.stmt|INSERT INTO "sources" (id,source) VALUES (?,?)|]
                                 sid stxt)
+
+                H.unitEx $ [H.stmt|
+                        SELECT setval('sources_id_seq', ?)
+                    |] (length sources)
 
                 forM_ people (\(Person pid _ na ni user src) -> H.unitEx $
                     [H.stmt|INSERT INTO "people"
@@ -181,11 +193,19 @@ main = do
                                 VALUES (?,?,?,?,?,false)|]
                                 pid na ni user src)
 
+                H.unitEx $ [H.stmt|
+                        SELECT setval('people_id_seq', ?)
+                    |] (length people)
+
                 forM_ entries (\(Entry pid tip st en entry img) -> H.unitEx $
                     [H.stmt|INSERT INTO "entries"
                         (person_id,trip_id,date_start,date_end,entry,image_path)
                         VALUES (?,?,?,?,?,?)|]
                             pid tip st en entry img)
+
+                H.unitEx $ [H.stmt|
+                        SELECT setval('entries_id_seq', ?)
+                    |] (length entries)
 
             H.releasePool pool2
 
